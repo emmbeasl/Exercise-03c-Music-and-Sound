@@ -45,26 +45,29 @@ func _on_HUD_changed():
 	update_color()	
 
 func _physics_process(_delta):
-	if HUD.ball_trail:
-		pass
+		if HUD.ball_trail:
+			var c = $Color.duplicate()
+			c.rect_global_position = global_position
+			c.color = c.color.darkened(0.4)
+			get_node("/root/Game/Trail_Container").add_child(c)
 
 
-	var bodies = get_colliding_bodies()
-	for body in bodies:
-		if body.name == "Walls":
-			screen_shake(wall_trauma)
-			play_sound(effect_wall)
-		if body.name == "Paddle":
-			screen_shake(paddle_trauma)
-			play_sound(effect_paddle)
-		if body.is_in_group("Brick"):
-			screen_shake(brick_trauma)
-			play_sound(effect_brick)
+		var bodies = get_colliding_bodies()
+		for body in bodies:
+			if body.name == "Walls":
+				screen_shake(wall_trauma)
+				play_sound(effect_wall)
+			if body.name == "Paddle":
+				screen_shake(paddle_trauma)
+				play_sound(effect_paddle)
+			if body.is_in_group("Brick"):
+				screen_shake(brick_trauma)
+				play_sound(effect_brick)
 			
-		if body.has_method("emit_particle"):
-			body.emit_particle(global_position)
-		if body.is_in_group("Brick"):
-			body.die()
+			if body.has_method("emit_particle"):
+				body.emit_particle(global_position)
+			if body.is_in_group("Brick"):
+				body.die()
 
 func _integrate_forces(state):
 	if abs(state.linear_velocity.x) < min_speed:
